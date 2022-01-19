@@ -138,7 +138,7 @@ const GetAgenda: FC = () => {
               _hover={{ cursor: "pointer" }}
             >
               <Text>Title : {e.title}</Text>
-              <Text>Added on : {e.date}</Text>
+              <Text>Date : {e.date}</Text>
               <Text>Desc : {e.description}</Text>
               <Text>Status : {e.status ? "Completed" : "Not Completed"}</Text>
 
