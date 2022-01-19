@@ -47,7 +47,8 @@ const GetAgenda: FC = () => {
   >(null);
   const [success, setSuccess] = useState<boolean>(false);
   const btnRef: any = useRef();
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
 
   //Delete hooks
   const [isOpened, setIsOpened] = useState<boolean>(false);
@@ -72,12 +73,12 @@ const GetAgenda: FC = () => {
   useEffect(() => {
     //Fetching all the agenda items from the backend
     const getAllAgendaItems = async () => {
-      const { data } = await axios.get(`${BELink}/agenda`);
+      const { data } = await axios.get(`${BELink}/agenda?page=${page}`);
       setAgendaItems(data.agendas);
       setTotalPages(data.totalPages);
     };
     getAllAgendaItems();
-  }, [BELink, agendaItems]);
+  }, [BELink, agendaItems, page]);
 
   //Delete a particular agenda item
   const handleDelete = async (id: string | number) => {
@@ -103,7 +104,6 @@ const GetAgenda: FC = () => {
 
   //Updating the agenda item
   const handleUpdate = async () => {
-    console.log("id:", uId);
     try {
       await axios.patch(`${BELink}/agenda/${uId}`, formData);
       onClose();
@@ -192,7 +192,6 @@ const GetAgenda: FC = () => {
         </AlertDialogContent>
       </AlertDialog>
       {/* Alert Dialog End*/}
-
       {/* Update Drawer  Start */}
       <Drawer
         isOpen={isOpen}
@@ -269,10 +268,10 @@ const GetAgenda: FC = () => {
       {/* Update Drawer  End */}
 
       {/* Exporting the agenda items as CSV */}
-      {agendaItems && <ExportCSV agendaItems={agendaItems} />}
+      <ExportCSV />
 
       {/* Pagination Start */}
-      <Pagination totalPages={totalPages} />
+      <Pagination totalPages={totalPages} setPage={setPage} page={page} />
     </>
   );
 };
