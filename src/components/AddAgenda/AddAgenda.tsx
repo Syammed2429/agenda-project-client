@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { ChangeEvent, FC, FormEvent, useState } from "react";
 import {
   Container,
   FormControl,
@@ -14,7 +14,6 @@ import {
 
 const AddAgenda: FC = () => {
   //Hooks
-  const [input, setInput] = useState("");
   const [formData, setFormData] = useState({
     title: String,
     description: String,
@@ -32,10 +31,15 @@ const AddAgenda: FC = () => {
     });
   };
 
+  //HandleSubmit function
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <Container>
-        <form>
+        <form onSubmit={handleSubmit}>
           <FormControl>
             <FormLabel htmlFor="title">Title</FormLabel>
             <Input
