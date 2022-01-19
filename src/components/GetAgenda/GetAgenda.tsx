@@ -1,6 +1,14 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import { Container } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Flex,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 
 const GetAgenda: FC = () => {
   //Hooks
@@ -9,7 +17,7 @@ const GetAgenda: FC = () => {
         _id: string | number;
         date: string | number | Date;
         description: string;
-        statue: boolean;
+        status: boolean;
         title: string;
       }[]
     | null
@@ -29,7 +37,37 @@ const GetAgenda: FC = () => {
 
   return (
     <>
-      <Container></Container>
+      {/* <Container> */}
+      <Center py={5}>
+        <SimpleGrid columns={{ base: 1, md: 4, lg: 5 }} spacing="8">
+          {/* Mapping through each item and rendering it */}
+          {agendaItems?.map((e) => (
+            <Box
+              spacing="3"
+              p="auto"
+              py="65"
+              h="60"
+              textAlign="center"
+              rounded="lg"
+              boxShadow="dark-lg"
+              key={e._id}
+              _hover={{ cursor: "pointer" }}
+            >
+              <Text>Title : {e.title}</Text>
+              <Text>Date : {e.date}</Text>
+              <Text>Desc : {e.description}</Text>
+              <Text>Status : {e.status ? "Completed" : "Not Completed"}</Text>
+              {/* Buttons for update and delete operations Start*/}
+              <Flex justify="space-around" py={4}>
+                <Button>Update</Button>
+                <Button>Delete</Button>
+              </Flex>
+              {/* Buttons for uopdate and delete operations End*/}
+            </Box>
+          ))}
+        </SimpleGrid>
+      </Center>
+      {/* </Container> */}
     </>
   );
 };
