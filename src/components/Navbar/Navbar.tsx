@@ -18,6 +18,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spacer,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
@@ -64,13 +65,9 @@ const Navbar: FC = () => {
           {/* Navbar Items End */}
 
           {/* Responsive Navbar items Start*/}
-          <Box
-            display={{ base: "flex", md: "none" }}
-            position="fixed"
-            right="5"
-            fontSize="18"
-            gap={4}
-          >
+
+          <Spacer />
+          <Box display={{ base: "flex", md: "none" }} fontSize="18" gap={4}>
             <Button variant="outline" onClick={toggleColorMode}>
               {colorMode === "light" ? <BsMoonFill /> : <BsSunFill />}
             </Button>
@@ -82,14 +79,22 @@ const Navbar: FC = () => {
                 icon={<GiHamburgerMenu />}
                 variant="outline"
               />
-              <MenuList>
-                <MenuItem icon={<GrFormAdd />}>Add Agenda</MenuItem>
-                <MenuItem icon={<BsFillCloudUploadFill />}>
-                  Get Agenda Items & export into CSV
-                </MenuItem>
-                <MenuItem icon={<BsFillCloudDownloadFill />}>
-                  Import CSV
-                </MenuItem>
+              <MenuList z-index="1">
+                <Link to="/">
+                  <MenuItem icon={<GrFormAdd />}>Add Agenda</MenuItem>
+                </Link>
+
+                <Link to="/get-agenda">
+                  <MenuItem icon={<BsFillCloudUploadFill />}>
+                    Get Agenda Items & export into CSV
+                  </MenuItem>
+                </Link>
+
+                <Link to="import-csv">
+                  <MenuItem icon={<BsFillCloudDownloadFill />}>
+                    Import CSV
+                  </MenuItem>
+                </Link>
               </MenuList>
             </Menu>
           </Box>
