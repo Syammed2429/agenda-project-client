@@ -1,10 +1,23 @@
 import React, { FC } from "react";
-import { BsMoonFill, BsSunFill } from "react-icons/bs";
 import {
+  BsMoonFill,
+  BsSunFill,
+  BsFillCloudUploadFill,
+  BsFillCloudDownloadFill,
+} from "react-icons/bs";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { GrFormAdd } from "react-icons/gr";
+import {
+  Box,
   Button,
   Flex,
   HStack,
+  IconButton,
   Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
@@ -16,22 +29,62 @@ const Navbar: FC = () => {
 
   return (
     <>
-      <Flex boxShadow="dark-lg" p="3" alignItems="center">
-        {/* Logo */}
-        <Image w={120} src={logo} alt="Agenda logo" />
+      <Box>
+        <Flex boxShadow="dark-lg" p="3" alignItems="center" w="100%">
+          {/* Logo */}
+          <Image w={120} src={logo} alt="Agenda logo" />
 
-        {/* Navbar Items start */}
-        <HStack position="absolute" right="4" spacing="24px" fontSize="18">
-          <Text>Add Agenda</Text>
-          <Text>Check Agenda Items & export</Text>
-          <Text>Import CSV</Text>
+          {/* Navbar Items start */}
+          <HStack
+            display={{ base: "none", md: "flex" }}
+            position="absolute"
+            right="4"
+            spacing="24px"
+            fontSize="18"
+          >
+            <Text>Add Agenda</Text>
+            <Text>Get Agenda Items & export into CSV</Text>
+            <Text>Import CSV</Text>
 
-          <Button onClick={toggleColorMode}>
-            {colorMode === "light" ? <BsMoonFill /> : <BsSunFill />}
-          </Button>
-        </HStack>
-        {/* Navbar Items End */}
-      </Flex>
+            <Button onClick={toggleColorMode}>
+              {colorMode === "light" ? <BsMoonFill /> : <BsSunFill />}
+            </Button>
+          </HStack>
+          {/* Navbar Items End */}
+
+          {/* Responsive Navbar items Start*/}
+          <Box
+            display={{ base: "flex", md: "none" }}
+            position="fixed"
+            right="5"
+            fontSize="18"
+            gap={4}
+          >
+            <Button variant="outline" onClick={toggleColorMode}>
+              {colorMode === "light" ? <BsMoonFill /> : <BsSunFill />}
+            </Button>
+
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                // aria-label="Options"
+                icon={<GiHamburgerMenu />}
+                variant="outline"
+              />
+              <MenuList>
+                <MenuItem icon={<GrFormAdd />}>Add Agenda</MenuItem>
+                <MenuItem icon={<BsFillCloudUploadFill />}>
+                  Get Agenda Items & export into CSV
+                </MenuItem>
+                <MenuItem icon={<BsFillCloudDownloadFill />}>
+                  Import CSV
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Box>
+          {/* Responsive Navbar items End*/}
+        </Flex>
+      </Box>
     </>
   );
 };
