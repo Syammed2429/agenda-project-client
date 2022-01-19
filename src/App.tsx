@@ -1,15 +1,13 @@
-import { Box } from '@chakra-ui/react';
-import React, { FC } from 'react';
-import './App.css';
-import { Layout } from './components/Layout/Layout';
+import React, { FC } from "react";
+import "./App.css";
+import { Layout } from "./components/Layout/Layout";
 
 const App: FC = () => {
-
   return (
-    <Box className="App">
+    <div className="App">
       <Layout />
-    </Box>
+    </div>
   );
-}
+};
 
 export default App;
