@@ -21,6 +21,7 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 import logo from "../../assets/logo.png";
 
@@ -32,7 +33,9 @@ const Navbar: FC = () => {
       <Box>
         <Flex boxShadow="dark-lg" p="3" alignItems="center" w="100%">
           {/* Logo */}
-          <Image w={120} src={logo} alt="Agenda logo" />
+          <Link to="/">
+            <Image w={120} src={logo} alt="Agenda logo" />
+          </Link>
 
           {/* Navbar Items start */}
           <HStack
@@ -42,7 +45,10 @@ const Navbar: FC = () => {
             spacing="24px"
             fontSize="18"
           >
-            <Text>Add Agenda</Text>
+            <Link to="/">
+              <Text>Add Agenda</Text>
+            </Link>
+
             <Text>Get Agenda Items & export into CSV</Text>
             <Text>Import CSV</Text>
 
