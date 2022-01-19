@@ -11,11 +11,9 @@ const ExportCSV = () => {
   useEffect(() => {
     const getAllItems = async () => {
       const { data } = await axios.get(`${BELink}/agenda/all-items`);
-      setAgendaItems(data.agendas);
+      setAgendaItems(data);
     };
-    return () => {
-      getAllItems();
-    };
+    getAllItems();
   }, [BELink, agendaItems]);
 
   //Headings for the csv file
