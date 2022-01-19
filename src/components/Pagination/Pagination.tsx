@@ -12,7 +12,7 @@ const Pagination = ({ totalPages, setPage, page }: any) => {
   return (
     <>
       <Container>
-        <Flex alignItems="center">
+        <Flex justify="center" my={5} gap={2} alignItems="center">
           <Text>Total Pages :{totalPages}</Text>
           <Button
             onClick={() => {
@@ -22,6 +22,7 @@ const Pagination = ({ totalPages, setPage, page }: any) => {
           >
             Prev
           </Button>
+          {/* Mapping through the page numbers and rendering the page numbers */}
           {arr.map((e) => (
             <Box key={e}>
               <Button
