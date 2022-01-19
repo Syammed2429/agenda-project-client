@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  FC,
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
   AlertDialog,
@@ -27,8 +20,6 @@ import {
   DrawerOverlay,
   Flex,
   FormControl,
-  FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   Radio,
@@ -53,7 +44,6 @@ const GetAgenda: FC = () => {
       }[]
     | null
   >(null);
-  const cancelRef: any = useRef();
   const [success, setSuccess] = useState<boolean>(false);
   const btnRef: any = useRef();
 
@@ -112,27 +102,12 @@ const GetAgenda: FC = () => {
   const handleUpdate = async () => {
     console.log("id:", uId);
     try {
-      const { data } = await axios.patch(`${BELink}/agenda/${uId}`, formData);
-      console.log("data:", data);
+      await axios.patch(`${BELink}/agenda/${uId}`, formData);
+      onClose();
     } catch (err) {
-      console.log("err:", err);
+      setIsOpened(true);
+      setSuccess(false);
     }
-  };
-
-  //HandleSubmit function
-  const handleSubmit = () => {
-    console.log("e:", uId);
-    // e.preventDefault();
-    // if (
-    //   formData.title.length === 0 ||
-    //   formData.description.length === 0 ||
-    //   formData.status.length === 0 ||
-    //   formData.date.length === 0
-    // ) {
-    //   onOpen();
-    //   return setSuccess(false);
-    // }
-    // postData(formData);
   };
 
   return (
@@ -203,7 +178,7 @@ const GetAgenda: FC = () => {
             {success ? (
               <Text>New Item is Successfully deleted from the agenda</Text>
             ) : (
-              <Text>Failed to delete an item from the agenda</Text>
+              <Text>Failed to complete the action, something went wrong</Text>
             )}
           </AlertDialogBody>
           <AlertDialogFooter>
@@ -215,7 +190,7 @@ const GetAgenda: FC = () => {
       </AlertDialog>
       {/* Alert Dialog End*/}
 
-      {/* Dialog Open Start */}
+      {/* Update Drawer  Start */}
       <Drawer
         isOpen={isOpen}
         placement="right"
@@ -234,34 +209,20 @@ const GetAgenda: FC = () => {
                 id="title"
                 type="text"
                 name="title"
-                placeholder="Enter the agenda title"
+                placeholder="Enter the new agenda title (optional)"
                 _placeholder={{ color: "gray.100" }}
                 onChange={handleInputChange}
               />
-              {formData.title.length !== 0 ? (
-                <FormHelperText>
-                  Enter the new title of agenda item.
-                </FormHelperText>
-              ) : (
-                <FormErrorMessage>Title is required.</FormErrorMessage>
-              )}
 
               <FormLabel htmlFor="description">Description</FormLabel>
               <Input
                 id="description"
                 type="text"
                 name="description"
-                placeholder="Enter the agenda description"
+                placeholder="Enter the new agenda description (optional)"
                 _placeholder={{ color: "gray.100" }}
                 onChange={handleInputChange}
               />
-              {formData.description.length !== 0 ? (
-                <FormHelperText>
-                  Enter the description of agenda item.
-                </FormHelperText>
-              ) : (
-                <FormErrorMessage>Description is required.</FormErrorMessage>
-              )}
 
               <FormLabel htmlFor="status">Is it completed?</FormLabel>
 
@@ -276,19 +237,13 @@ const GetAgenda: FC = () => {
                 </Stack>
               </RadioGroup>
 
-              <FormLabel htmlFor="date">Date</FormLabel>
+              <FormLabel htmlFor="date">Completion Date</FormLabel>
               <Input
                 id="date"
                 type="date"
                 name="date"
                 onChange={handleInputChange}
               />
-
-              {formData.date.length !== 0 ? (
-                <FormHelperText>Enter the date of agenda item.</FormHelperText>
-              ) : (
-                <FormErrorMessage>Title is required.</FormErrorMessage>
-              )}
             </FormControl>
             {/* Form End */}
           </DrawerBody>
@@ -301,13 +256,16 @@ const GetAgenda: FC = () => {
               onClick={() => {
                 handleUpdate();
               }}
-              colorScheme="blue"
+              colorScheme="teal"
             >
               Save
             </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+      {/* Update Drawer  End */}
+
+      {/* Exporting the agenda items as CSV */}
       {agendaItems && <ExportCSV agendaItems={agendaItems} />}
     </>
   );
