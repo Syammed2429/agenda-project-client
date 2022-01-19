@@ -38,9 +38,16 @@ const ImportCSV = () => {
           list.push(obj);
         }
       }
-
     }
-  }
+
+    // prepare columns list from headers
+    const columns = headers.map((c) => ({
+      name: c,
+      selector: c
+    }));
+
+  };
+
 
   return (
     <>
