@@ -2,15 +2,17 @@ import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { Box, Button, Center, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 
+import { ExportCSV } from "../ExportCSV/ExportCSV";
+
 const GetAgenda: FC = () => {
   //Hooks
   const [agendaItems, setAgendaItems] = useState<
     | {
         _id: string | number;
-        date: string | number | Date;
+        title: string;
         description: string;
         status: boolean;
-        title: string;
+        date: string | number;
       }[]
     | null
   >(null);
@@ -32,6 +34,9 @@ const GetAgenda: FC = () => {
     const { data } = await axios.delete(`${BELink}/agenda/${id}`);
     console.log("data:", data);
   };
+
+  //Updating the agenda item
+  const handleUpdate = (id: string | number) => {};
 
   return (
     <>
@@ -57,7 +62,14 @@ const GetAgenda: FC = () => {
 
               {/* Buttons for update and delete operations Start*/}
               <Flex justify="space-around" py={4}>
-                <Button colorScheme="green">Update</Button>
+                <Button
+                  onClick={() => {
+                    handleUpdate(e._id);
+                  }}
+                  colorScheme="green"
+                >
+                  Update
+                </Button>
                 <Button
                   colorScheme="red"
                   onClick={() => {
@@ -73,6 +85,7 @@ const GetAgenda: FC = () => {
         </SimpleGrid>
       </Center>
       {/* </Container> */}
+      {agendaItems && <ExportCSV agendaItems={agendaItems} />}
     </>
   );
 };
