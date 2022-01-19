@@ -48,8 +48,10 @@ const Navbar: FC = () => {
             <Link to="/">
               <Text>Add Agenda</Text>
             </Link>
+            <Link to="/get-agenda">
+              <Text>Get Agenda Items & export into CSV</Text>
+            </Link>
 
-            <Text>Get Agenda Items & export into CSV</Text>
             <Text>Import CSV</Text>
 
             <Button onClick={toggleColorMode}>
