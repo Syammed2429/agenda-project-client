@@ -85,8 +85,9 @@ const AddAgenda: FC = () => {
 
   return (
     <>
-      <Container>
+      <Container my={20}>
         {/* Form Starts */}
+
         <form onSubmit={handleSubmit}>
           <FormControl>
             <FormLabel htmlFor="title">Title</FormLabel>
