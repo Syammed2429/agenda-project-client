@@ -31,6 +31,7 @@ import {
 } from "@chakra-ui/react";
 
 import { ExportCSV } from "../ExportCSV/ExportCSV";
+import { Pagination } from "../Pagination/Pagination";
 
 const GetAgenda: FC = () => {
   //Hooks
@@ -46,6 +47,7 @@ const GetAgenda: FC = () => {
   >(null);
   const [success, setSuccess] = useState<boolean>(false);
   const btnRef: any = useRef();
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   //Delete hooks
   const [isOpened, setIsOpened] = useState<boolean>(false);
@@ -59,7 +61,7 @@ const GetAgenda: FC = () => {
     status: Boolean,
     date: Date,
   });
-  const [uId, setUId] = useState<string | number | null>(null);
+  const [uId, setUId] = useState<string | number>();
 
   //Backend link
   const BELink: string | undefined = process.env.REACT_APP_BACKEND_URL;
@@ -72,6 +74,7 @@ const GetAgenda: FC = () => {
     const getAllAgendaItems = async () => {
       const { data } = await axios.get(`${BELink}/agenda`);
       setAgendaItems(data.agendas);
+      setTotalPages(data.totalPages);
     };
     getAllAgendaItems();
   }, [BELink, agendaItems]);
@@ -267,6 +270,9 @@ const GetAgenda: FC = () => {
 
       {/* Exporting the agenda items as CSV */}
       {agendaItems && <ExportCSV agendaItems={agendaItems} />}
+
+      {/* Pagination Start */}
+      <Pagination totalPages={totalPages} />
     </>
   );
 };
