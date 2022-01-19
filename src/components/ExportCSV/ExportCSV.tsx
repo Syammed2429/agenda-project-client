@@ -1,8 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Button } from "@chakra-ui/react";
 import { CSVLink } from "react-csv";
+import axios from "axios";
 
-const ExportCSV = ({ agendaItems }: any) => {
+const ExportCSV = () => {
+  const [agendaItems, setAgendaItems] = useState([]);
+  //Backend link
+  const BELink: string | undefined = process.env.REACT_APP_BACKEND_URL;
+
+  useEffect(() => {
+    const getAllItems = async () => {
+      const { data } = await axios.get(`${BELink}/agenda/all-items`);
+      setAgendaItems(data.agendas);
+    };
+    return () => {
+      getAllItems();
+    };
+  }, [BELink, agendaItems]);
+
   //Headings for the csv file
   const headers = [
     { label: "Title", key: "title" },
@@ -22,7 +37,7 @@ const ExportCSV = ({ agendaItems }: any) => {
     <>
       <Container>
         <Button>
-          <CSVLink {...CSV}>Export to CSV</CSVLink>
+          {agendaItems && <CSVLink {...CSV}>Export to CSV</CSVLink>}
         </Button>
       </Container>
     </>
