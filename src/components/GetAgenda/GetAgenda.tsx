@@ -1,14 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Box,
-  Button,
-  Center,
-  Container,
-  Flex,
-  SimpleGrid,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Center, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 
 const GetAgenda: FC = () => {
   //Hooks
@@ -33,20 +25,25 @@ const GetAgenda: FC = () => {
       setAgendaItems(data.agendas);
     };
     getAllAgendaItems();
-  }, [BELink]);
+  }, [BELink, agendaItems]);
+
+  //Delete a particular agenda item
+  const handleDelete = async (id: string | number) => {
+    const { data } = await axios.delete(`${BELink}/agenda/${id}`);
+    console.log("data:", data);
+  };
 
   return (
     <>
       {/* <Container> */}
       <Center py={5}>
-        <SimpleGrid columns={{ base: 1, md: 4, lg: 5 }} spacing="8">
+        <SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing="8">
           {/* Mapping through each item and rendering it */}
           {agendaItems?.map((e) => (
             <Box
               spacing="3"
-              p="auto"
-              py="65"
-              h="60"
+              p="10"
+              w={280}
               textAlign="center"
               rounded="lg"
               boxShadow="dark-lg"
@@ -54,15 +51,23 @@ const GetAgenda: FC = () => {
               _hover={{ cursor: "pointer" }}
             >
               <Text>Title : {e.title}</Text>
-              <Text>Date : {e.date}</Text>
+              <Text>Added on : {e.date}</Text>
               <Text>Desc : {e.description}</Text>
               <Text>Status : {e.status ? "Completed" : "Not Completed"}</Text>
+
               {/* Buttons for update and delete operations Start*/}
               <Flex justify="space-around" py={4}>
-                <Button>Update</Button>
-                <Button>Delete</Button>
+                <Button colorScheme="green">Update</Button>
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    handleDelete(e._id);
+                  }}
+                >
+                  Delete
+                </Button>
               </Flex>
-              {/* Buttons for uopdate and delete operations End*/}
+              {/* Buttons for update and delete operations End */}
             </Box>
           ))}
         </SimpleGrid>
