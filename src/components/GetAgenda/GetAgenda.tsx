@@ -1,6 +1,21 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Box, Button, Center, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Box,
+  Button,
+  Center,
+  Flex,
+  SimpleGrid,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { ExportCSV } from "../ExportCSV/ExportCSV";
 
@@ -16,9 +31,14 @@ const GetAgenda: FC = () => {
       }[]
     | null
   >(null);
+  const cancelRef: any = useRef();
+  const [success, setSuccess] = useState<boolean>(false);
 
   //Backend link
   const BELink: string | undefined = process.env.REACT_APP_BACKEND_URL;
+
+  //AlertDialog
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     //Fetching all the agenda items from the backend
@@ -31,8 +51,14 @@ const GetAgenda: FC = () => {
 
   //Delete a particular agenda item
   const handleDelete = async (id: string | number) => {
-    const { data } = await axios.delete(`${BELink}/agenda/${id}`);
-    console.log("data:", data);
+    try {
+      await axios.delete(`${BELink}/agenda/${id}`);
+      onOpen();
+      setSuccess(true);
+    } catch (error) {
+      setSuccess(false);
+      onOpen();
+    }
   };
 
   //Updating the agenda item
@@ -85,6 +111,37 @@ const GetAgenda: FC = () => {
         </SimpleGrid>
       </Center>
       {/* </Container> */}
+      {/* Alert Dialog Start*/}
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            {success ? <Text>Success</Text> : <Text>Error</Text>}
+          </AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            {success ? (
+              <Text>New Item is Successfully deleted from the agenda</Text>
+            ) : (
+              <Text>Failed to delete an item from the agenda</Text>
+            )}
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button colorScheme="red" ref={cancelRef} onClick={onClose}>
+              Ok
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      {/* Alert Dialog End*/}
+
       {agendaItems && <ExportCSV agendaItems={agendaItems} />}
     </>
   );
