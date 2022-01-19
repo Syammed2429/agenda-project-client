@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Button } from "@chakra-ui/react";
+import { Button, Center } from "@chakra-ui/react";
 import { CSVLink } from "react-csv";
 import axios from "axios";
 
@@ -35,11 +35,11 @@ const ExportCSV = () => {
 
   return (
     <>
-      <Container>
+      <Center>
         <Button>
           {agendaItems && <CSVLink {...CSV}>Export to CSV</CSVLink>}
         </Button>
-      </Container>
+      </Center>
     </>
   );
 };
