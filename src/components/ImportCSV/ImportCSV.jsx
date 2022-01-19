@@ -46,6 +46,10 @@ const ImportCSV = () => {
       selector: c
     }));
 
+    //Storing the data and headers to the state
+    setData(list);
+    setColumns(columns);
+
   };
 
 
