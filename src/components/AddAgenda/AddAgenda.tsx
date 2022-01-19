@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, FormEvent, useState } from "react";
+import React, { ChangeEvent, FC, FormEvent, useRef, useState } from "react";
 import {
   Container,
   FormControl,
@@ -10,7 +10,17 @@ import {
   Stack,
   Radio,
   RadioGroup,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Text,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 const AddAgenda: FC = () => {
   //Hooks
@@ -20,6 +30,14 @@ const AddAgenda: FC = () => {
     status: Boolean,
     date: Date,
   });
+  const [success, setSuccess] = useState<boolean>(false);
+  const cancelRef: any = useRef();
+
+  //Backend link
+  const BELink: string | undefined = process.env.REACT_APP_BACKEND_URL;
+
+  //AlertDialog
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   //HandleInputChange function
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,14 +49,44 @@ const AddAgenda: FC = () => {
     });
   };
 
+  //Post the agenda items to the backend
+  const postData = async (formData: string[] | {}) => {
+    try {
+      const data = await axios.post(`${BELink}/agenda`, formData);
+      if (data.status === 201) {
+        onOpen();
+        setSuccess(true);
+      } else {
+        setSuccess(false);
+        onOpen();
+
+        return;
+      }
+    } catch (err) {
+      setSuccess(false);
+      onOpen();
+    }
+  };
+
   //HandleSubmit function
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (
+      formData.title.length === 0 ||
+      formData.description.length === 0 ||
+      formData.status.length === 0 ||
+      formData.date.length === 0
+    ) {
+      onOpen();
+      return setSuccess(false);
+    }
+    postData(formData);
   };
 
   return (
     <>
       <Container>
+        {/* Form Starts */}
         <form onSubmit={handleSubmit}>
           <FormControl>
             <FormLabel htmlFor="title">Title</FormLabel>
@@ -75,7 +123,7 @@ const AddAgenda: FC = () => {
 
             <FormLabel htmlFor="status">Is it completed?</FormLabel>
 
-            <RadioGroup defaultValue="false" name="status">
+            <RadioGroup name="status">
               <Stack spacing={5} direction="row" onChange={handleInputChange}>
                 <Radio colorScheme="red" value="true">
                   Yes
@@ -86,7 +134,7 @@ const AddAgenda: FC = () => {
               </Stack>
             </RadioGroup>
 
-            <FormLabel htmlFor="date">date</FormLabel>
+            <FormLabel htmlFor="date">Date</FormLabel>
             <Input
               id="date"
               type="date"
@@ -104,6 +152,41 @@ const AddAgenda: FC = () => {
             </Button>
           </FormControl>
         </form>
+        {/* Form End */}
+
+        {/* Alert Dialog Start*/}
+        <AlertDialog
+          motionPreset="slideInBottom"
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+          isOpen={isOpen}
+          isCentered
+        >
+          <AlertDialogOverlay />
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              {success ? <Text>Success</Text> : <Text>Error</Text>}
+            </AlertDialogHeader>
+            <AlertDialogCloseButton />
+            <AlertDialogBody>
+              {success ? (
+                <Text>New Item is Successfully added to the agenda</Text>
+              ) : (
+                <Text>
+                  Failed to add an item to the agenda or your input fields are
+                  empty
+                </Text>
+              )}
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button colorScheme="red" ref={cancelRef} onClick={onClose}>
+                Ok
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        {/* Alert Dialog End*/}
       </Container>
     </>
   );
