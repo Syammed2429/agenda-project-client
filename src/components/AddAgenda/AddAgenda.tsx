@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { ChangeEvent, FC, useState } from "react";
 import {
   Container,
   FormControl,
@@ -7,75 +7,90 @@ import {
   FormHelperText,
   Button,
   Input,
-  Text,
-  Checkbox,
   Stack,
   Radio,
   RadioGroup,
 } from "@chakra-ui/react";
 
 const AddAgenda: FC = () => {
+  //Hooks
   const [input, setInput] = useState("");
+  const [formData, setFormData] = useState({
+    title: String,
+    description: String,
+    status: Boolean,
+    date: Date,
+  });
 
-  const handleInputChange = (e: any) => setInput(e.target.value);
+  //HandleInputChange function
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
-  const isError = input === "";
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   return (
     <>
       <Container>
         <form>
-          <FormControl isInvalid={isError}>
+          <FormControl>
             <FormLabel htmlFor="title">Title</FormLabel>
             <Input
               id="title"
               type="text"
-              //   value={input}
+              name="title"
+              placeholder="Enter the agenda title"
+              _placeholder={{ color: "gray.100" }}
               onChange={handleInputChange}
             />
-            {!isError ? (
+            {formData.title.length !== 0 ? (
               <FormHelperText>Enter the title of agenda item.</FormHelperText>
             ) : (
               <FormErrorMessage>Title is required.</FormErrorMessage>
             )}
+
             <FormLabel htmlFor="description">Description</FormLabel>
             <Input
               id="description"
               type="text"
-              //   value={input}
+              name="description"
+              placeholder="Enter the agenda description"
+              _placeholder={{ color: "gray.100" }}
               onChange={handleInputChange}
             />
-            {!isError ? (
-              <FormHelperText>Enter the title of agenda item.</FormHelperText>
+            {formData.description.length !== 0 ? (
+              <FormHelperText>
+                Enter the description of agenda item.
+              </FormHelperText>
             ) : (
-              <FormErrorMessage>Title is required.</FormErrorMessage>
+              <FormErrorMessage>Description is required.</FormErrorMessage>
             )}
-            <FormLabel htmlFor="status">Status</FormLabel>
-            <Text>Is it completed?</Text>
 
-            <RadioGroup defaultValue="2">
-              <Stack spacing={5} direction="row">
-                <Radio colorScheme="red" value="1">
+            <FormLabel htmlFor="status">Is it completed?</FormLabel>
+
+            <RadioGroup defaultValue="false" name="status">
+              <Stack spacing={5} direction="row" onChange={handleInputChange}>
+                <Radio colorScheme="red" value="true">
                   Yes
                 </Radio>
-                <Radio colorScheme="green" value="2">
+                <Radio colorScheme="green" value="false">
                   No
                 </Radio>
               </Stack>
             </RadioGroup>
-            {!isError ? (
-              <FormHelperText>Enter the title of agenda item.</FormHelperText>
-            ) : (
-              <FormErrorMessage>Title is required.</FormErrorMessage>
-            )}
+
             <FormLabel htmlFor="date">date</FormLabel>
             <Input
               id="date"
               type="date"
-              value={input}
+              name="date"
               onChange={handleInputChange}
             />
-            {!isError ? (
+
+            {formData.date.length !== 0 ? (
               <FormHelperText>Enter the date of agenda item.</FormHelperText>
             ) : (
               <FormErrorMessage>Title is required.</FormErrorMessage>
