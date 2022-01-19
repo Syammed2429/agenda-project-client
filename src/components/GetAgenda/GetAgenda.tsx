@@ -25,6 +25,7 @@ import {
   Radio,
   RadioGroup,
   SimpleGrid,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
@@ -117,6 +118,12 @@ const GetAgenda: FC = () => {
     <>
       {/* <Container> */}
       <Center py={5}>
+        {/* a loading bar */}
+        {agendaItems === null ? (
+          <Flex justify="center" alignItems="center" direction="column">
+            <Spinner />
+          </Flex>
+        ) : null}
         <SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing="8">
           {/* Mapping through each item and rendering it */}
           {agendaItems?.map((e) => (
