@@ -1,12 +1,12 @@
 import { Box } from "@chakra-ui/react";
 import React, { FC } from "react";
-import { Navbar } from "../Navbar/Navbar";
+import { Routers } from "../Routers/Routers";
 
 const Layout: FC = () => {
   return (
     <>
       <Box>
-        <Navbar />
+        <Routers />
       </Box>
     </>
   );
