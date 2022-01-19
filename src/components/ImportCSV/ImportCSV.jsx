@@ -1,7 +1,20 @@
 import React, { FC, useState } from "react";
 import * as XLSX from "xlsx";
 import DataTable from "react-data-table-component";
-import { Text } from "@chakra-ui/react";
+import {
+  Text,
+  Input,
+  Box,
+  Flex,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  Container
+} from "@chakra-ui/react";
 
 const ImportCSV = () => {
   //Hooks
@@ -62,8 +75,8 @@ const ImportCSV = () => {
       const bstr = evt.target.result;
       const wb = XLSX.read(bstr, { type: "binary" });
       /* Get first worksheet */
-      const wsname = wb.SheetNames[0];
-      const ws = wb.Sheets[wsname];
+      const wsName = wb.SheetNames[0];
+      const ws = wb.Sheets[wsName];
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       processData(data);
@@ -75,6 +88,25 @@ const ImportCSV = () => {
   return (
     <>
       <Text>Import CSV</Text>
+      <Input type="file" accept=".csv,.xlsx,.xls" onChange={handleFileUpload} />
+
+      <Container overflowX='auto'>
+        <Table size='md'>
+          {/* CSV Heading's*/}
+          <Thead>
+            {columns?.map((e) => (
+              <Td key={e.name}>
+                <Th>{e.name}</Th>
+              </Td>
+            ))}
+          </Thead>
+        </Table>
+
+      </Container>
+
+      {/* <DataTable pagination highlightOnHover columns={columns} data={data} /> */}
+      {/* </Box> */}
+
     </>
   );
 };
