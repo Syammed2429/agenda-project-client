@@ -1,4 +1,11 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import axios from "axios";
 import {
   AlertDialog,
@@ -19,14 +26,20 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
   Input,
+  Radio,
+  RadioGroup,
   SimpleGrid,
+  Stack,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
 
 import { ExportCSV } from "../ExportCSV/ExportCSV";
-import { UpdateAgenda } from "../UpdateAgenda/UpdateAgenda";
 
 const GetAgenda: FC = () => {
   //Hooks
@@ -56,6 +69,7 @@ const GetAgenda: FC = () => {
     status: Boolean,
     date: Date,
   });
+  const [uId, setUId] = useState<string | number | null>(null);
 
   //Backend link
   const BELink: string | undefined = process.env.REACT_APP_BACKEND_URL;
@@ -84,10 +98,41 @@ const GetAgenda: FC = () => {
     }
   };
 
+  //HandleInputChange function
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   //Updating the agenda item
-  const handleUpdate = (id: string | number) => {
-    console.log("id:", id);
-    onOpen();
+  const handleUpdate = async () => {
+    console.log("id:", uId);
+    try {
+      const { data } = await axios.patch(`${BELink}/agenda/${uId}`, formData);
+      console.log("data:", data);
+    } catch (err) {
+      console.log("err:", err);
+    }
+  };
+
+  //HandleSubmit function
+  const handleSubmit = () => {
+    console.log("e:", uId);
+    // e.preventDefault();
+    // if (
+    //   formData.title.length === 0 ||
+    //   formData.description.length === 0 ||
+    //   formData.status.length === 0 ||
+    //   formData.date.length === 0
+    // ) {
+    //   onOpen();
+    //   return setSuccess(false);
+    // }
+    // postData(formData);
   };
 
   return (
@@ -117,7 +162,8 @@ const GetAgenda: FC = () => {
                 <Button
                   ref={btnRef}
                   onClick={() => {
-                    handleUpdate(e._id);
+                    setUId(e._id);
+                    onOpen();
                   }}
                   colorScheme="green"
                 >
@@ -179,19 +225,86 @@ const GetAgenda: FC = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
+          <DrawerHeader>Update your agenda Item</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Type here..." />
-            <Input placeholder="Type here..." />
-            <Input placeholder="Type here..." />
+            <FormControl>
+              <FormLabel htmlFor="title">Title</FormLabel>
+              <Input
+                id="title"
+                type="text"
+                name="title"
+                placeholder="Enter the agenda title"
+                _placeholder={{ color: "gray.100" }}
+                onChange={handleInputChange}
+              />
+              {formData.title.length !== 0 ? (
+                <FormHelperText>
+                  Enter the new title of agenda item.
+                </FormHelperText>
+              ) : (
+                <FormErrorMessage>Title is required.</FormErrorMessage>
+              )}
+
+              <FormLabel htmlFor="description">Description</FormLabel>
+              <Input
+                id="description"
+                type="text"
+                name="description"
+                placeholder="Enter the agenda description"
+                _placeholder={{ color: "gray.100" }}
+                onChange={handleInputChange}
+              />
+              {formData.description.length !== 0 ? (
+                <FormHelperText>
+                  Enter the description of agenda item.
+                </FormHelperText>
+              ) : (
+                <FormErrorMessage>Description is required.</FormErrorMessage>
+              )}
+
+              <FormLabel htmlFor="status">Is it completed?</FormLabel>
+
+              <RadioGroup name="status">
+                <Stack spacing={5} direction="row" onChange={handleInputChange}>
+                  <Radio colorScheme="red" value="true">
+                    Yes
+                  </Radio>
+                  <Radio colorScheme="green" value="false">
+                    No
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+
+              <FormLabel htmlFor="date">Date</FormLabel>
+              <Input
+                id="date"
+                type="date"
+                name="date"
+                onChange={handleInputChange}
+              />
+
+              {formData.date.length !== 0 ? (
+                <FormHelperText>Enter the date of agenda item.</FormHelperText>
+              ) : (
+                <FormErrorMessage>Title is required.</FormErrorMessage>
+              )}
+            </FormControl>
+            {/* Form End */}
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button
+              onClick={() => {
+                handleUpdate();
+              }}
+              colorScheme="blue"
+            >
+              Save
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
