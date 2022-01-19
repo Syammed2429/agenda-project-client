@@ -1,19 +1,11 @@
-import React, { FC, useState } from "react";
+import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import DataTable from "react-data-table-component";
 import {
   Text,
   Input,
   Box,
-  Flex,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  Container
+  Center
 } from "@chakra-ui/react";
 
 const ImportCSV = () => {
@@ -33,13 +25,13 @@ const ImportCSV = () => {
       const row = dataStringLines[i].split(
         /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/
       );
-      if (headers && row.length == headers.length) {
+      if (headers && row.length === headers.length) {
         const obj = {};
         for (let j = 0; j < headers.length; j++) {
           let d = row[j];
           if (d.length > 0) {
-            if (d[0] == '"') d = d.substring(1, d.length - 1);
-            if (d[d.length - 1] == '"') d = d.substring(d.length - 2, 1);
+            if (d[0] === '"') d = d.substring(1, d.length - 1);
+            if (d[d.length - 1] === '"') d = d.substring(d.length - 2, 1);
           }
           if (headers[j]) {
             obj[headers[j]] = d;
@@ -71,13 +63,13 @@ const ImportCSV = () => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onload = (evt) => {
-      /* Parse data */
+      // Parse data 
       const bstr = evt.target.result;
       const wb = XLSX.read(bstr, { type: "binary" });
-      /* Get first worksheet */
+      // Get first worksheet 
       const wsName = wb.SheetNames[0];
       const ws = wb.Sheets[wsName];
-      /* Convert array of arrays */
+      //Convert array of arrays 
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       processData(data);
     };
@@ -87,25 +79,21 @@ const ImportCSV = () => {
 
   return (
     <>
-      <Text>Import CSV</Text>
-      <Input type="file" accept=".csv,.xlsx,.xls" onChange={handleFileUpload} />
+      <Box py={2}>
 
-      <Container overflowX='auto'>
-        <Table size='md'>
-          {/* CSV Heading's*/}
-          <Thead>
-            {columns?.map((e) => (
-              <Td key={e.name}>
-                <Th>{e.name}</Th>
-              </Td>
-            ))}
-          </Thead>
-        </Table>
+        <Center>
 
-      </Container>
+          <Text fontSize='lg' m={4}>Import A CSV File</Text>
+        </Center>
+        <Input type="file" accept=".csv,.xlsx,.xls" onChange={handleFileUpload} />
 
-      {/* <DataTable pagination highlightOnHover columns={columns} data={data} /> */}
-      {/* </Box> */}
+        <Box
+          m={5}
+          color="red">
+          {/* Rendering the CSV File data*/}
+          <DataTable pagination highlightOnHover columns={columns} data={data} />
+        </Box>
+      </Box>
 
     </>
   );
