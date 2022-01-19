@@ -11,13 +11,22 @@ import {
   Box,
   Button,
   Center,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
+  Input,
   SimpleGrid,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
 
 import { ExportCSV } from "../ExportCSV/ExportCSV";
+import { UpdateAgenda } from "../UpdateAgenda/UpdateAgenda";
 
 const GetAgenda: FC = () => {
   //Hooks
@@ -33,6 +42,20 @@ const GetAgenda: FC = () => {
   >(null);
   const cancelRef: any = useRef();
   const [success, setSuccess] = useState<boolean>(false);
+  const btnRef: any = useRef();
+
+  //Delete hooks
+  const [isOpened, setIsOpened] = useState<boolean>(false);
+  const onClosed = () => setIsOpened(false);
+  const deleteCancelRef: any = useRef();
+
+  //Update Data Hooks
+  const [formData, setFormData] = useState({
+    title: String,
+    description: String,
+    status: Boolean,
+    date: Date,
+  });
 
   //Backend link
   const BELink: string | undefined = process.env.REACT_APP_BACKEND_URL;
@@ -53,16 +76,19 @@ const GetAgenda: FC = () => {
   const handleDelete = async (id: string | number) => {
     try {
       await axios.delete(`${BELink}/agenda/${id}`);
-      onOpen();
+      setIsOpened(true);
       setSuccess(true);
     } catch (error) {
+      setIsOpened(true);
       setSuccess(false);
-      onOpen();
     }
   };
 
   //Updating the agenda item
-  const handleUpdate = (id: string | number) => {};
+  const handleUpdate = (id: string | number) => {
+    console.log("id:", id);
+    onOpen();
+  };
 
   return (
     <>
@@ -89,6 +115,7 @@ const GetAgenda: FC = () => {
               {/* Buttons for update and delete operations Start*/}
               <Flex justify="space-around" py={4}>
                 <Button
+                  ref={btnRef}
                   onClick={() => {
                     handleUpdate(e._id);
                   }}
@@ -114,9 +141,9 @@ const GetAgenda: FC = () => {
       {/* Alert Dialog Start*/}
       <AlertDialog
         motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-        isOpen={isOpen}
+        leastDestructiveRef={deleteCancelRef}
+        onClose={onClosed}
+        isOpen={isOpened}
         isCentered
       >
         <AlertDialogOverlay />
@@ -134,7 +161,7 @@ const GetAgenda: FC = () => {
             )}
           </AlertDialogBody>
           <AlertDialogFooter>
-            <Button colorScheme="red" ref={cancelRef} onClick={onClose}>
+            <Button colorScheme="red" ref={deleteCancelRef} onClick={onClosed}>
               Ok
             </Button>
           </AlertDialogFooter>
@@ -142,6 +169,32 @@ const GetAgenda: FC = () => {
       </AlertDialog>
       {/* Alert Dialog End*/}
 
+      {/* Dialog Open Start */}
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Create your account</DrawerHeader>
+
+          <DrawerBody>
+            <Input placeholder="Type here..." />
+            <Input placeholder="Type here..." />
+            <Input placeholder="Type here..." />
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button colorScheme="blue">Save</Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
       {agendaItems && <ExportCSV agendaItems={agendaItems} />}
     </>
   );
